@@ -1,0 +1,9 @@
+[package]
+name = "get-hc"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+git2 = "0.20.2"
+reqwest = { version = "0.12.23", features = ["blocking"] }
+winreg = "0.55.0"
