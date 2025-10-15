@@ -4,8 +4,8 @@ use std::{env::home_dir};
 use winreg::enums::*;
 use winreg::{RegKey};
 
-const HCC_URL : &str = "https://www.dropbox.com/scl/fi/6gleswxcqv6wrkn3efrhs/hcc.exe?rlkey=80ptsuqqilqv6jyzzbp2xuwoz&st=kigljjq4&dl=0&raw=1";
-const GUP_URL : &str = "https://www.dropbox.com/scl/fi/enh6zfctetdzjoeu5xhxb/gup.exe?rlkey=abjb6iidl9xins8yuxcmghq4z&st=0fz108fd&dl=0&raw=1";
+const HCC_URL : &str = "https://github.com/LoganLeeTwentyThree/gup/releases/latest/download/hcc.exe";
+const GUP_URL : &str = "https://github.com/LoganLeeTwentyThree/gup/releases/latest/download/gup.exe";
 
 fn get_hcc() -> Result<String, String>{
     let hc_dir = home_dir().unwrap().join(".hc");
