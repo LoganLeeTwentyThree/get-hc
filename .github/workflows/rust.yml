@@ -1,0 +1,55 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - run: git fetch --all --tags
+      - name: Build windows
+        uses: rust-build/rust-build.action@v1.4.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          RUSTTARGET: x86_64-pc-windows-gnu
+          TOOLCHAIN_VERSION: nightly
+          UPLOAD_MODE: none
+      - name: Check Release Version
+        id: version_check_master
+        uses: thebongy/version-check@v2
+        with:
+          file: Cargo.toml
+          tagFormat: v${version}
+          failBuild: false
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        with:
+          fallback: 1.0.0
+      - name: Create New Release
+        if: ${{ steps.version_check_master.outputs.releaseVersion != steps.previoustag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >-
+          gh release create ${{ steps.version_check_master.outputs.releaseVersion }} 
+          "output/get-hc.exe"
+          --generate-notes
+          --title "gup ${{ steps.version_check_master.outputs.releaseVersion }}"
+      - name: Update Current Release
+        if: ${{ steps.version_check_master.outputs.releaseVersion == steps.previoustag.outputs.tag }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >-
+          gh release upload ${{ steps.version_check_master.outputs.releaseVersion }} 
+          "output/get-hc.exe"
+          --clobber
+        
